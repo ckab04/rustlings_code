@@ -14,11 +14,11 @@
 // Execute `rustlings hint hashmaps3` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
 
 use std::collections::HashMap;
 
 // A structure to store the goal details of a team.
+#[derive(Debug)]
 struct Team {
     goals_scored: u8,
     goals_conceded: u8,
@@ -39,6 +39,17 @@ fn build_scores_table(results: String) -> HashMap<String, Team> {
         // will be the number of goals conceded from team_2, and similarly
         // goals scored by team_2 will be the number of goals conceded by
         // team_1.
+        print!("Team 1 : {} =  {}, Team 2 : {} = {}\n", team_1_name, team_1_score, team_2_name, team_2_score);
+        scores.insert(team_1_name, Team{ goals_scored:  team_1_score, goals_conceded:team_2_score});
+
+        if scores.contains_key(&team_2_name){
+            let team_score = scores.get(&team_2_name).unwrap();
+            let total_goals_score = team_score.goals_scored + team_2_score;
+            let total_goals_conceded = team_score.goals_conceded + team_1_score;
+            scores.insert(team_2_name, Team{ goals_scored : total_goals_score, goals_conceded : total_goals_conceded});
+        }else{
+            scores.insert(team_2_name, Team {goals_scored : team_2_score, goals_conceded: team_1_score});
+        }
     }
     scores
 }
@@ -72,6 +83,8 @@ mod tests {
     fn validate_team_score_1() {
         let scores = build_scores_table(get_results());
         let team = scores.get("England").unwrap();
+        println!("{:?}", team);
+        print!("England  => scored goals : {} +++++ scored conceded : {}", team.goals_scored, team.goals_conceded);
         assert_eq!(team.goals_scored, 5);
         assert_eq!(team.goals_conceded, 4);
     }
