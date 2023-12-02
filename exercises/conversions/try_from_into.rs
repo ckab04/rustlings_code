@@ -27,7 +27,6 @@ enum IntoColorError {
     IntConversion,
 }
 
-// I AM NOT DONE
 
 // Your task is to complete this implementation and return an Ok result of inner
 // type Color. You need to create an implementation for a tuple of three
@@ -41,6 +40,17 @@ enum IntoColorError {
 impl TryFrom<(i16, i16, i16)> for Color {
     type Error = IntoColorError;
     fn try_from(tuple: (i16, i16, i16)) -> Result<Self, Self::Error> {
+
+        match tuple{
+            (x, y, z) if x < 0 || y < 0 || z < 0 => Err(IntoColorError::IntConversion),
+            (x, y, z) if x > 255 || y > 255 || z > 255 => Err(IntoColorError::IntConversion),
+            (x, y, z)  =>  Ok(Self{
+                red: tuple.0 as u8,
+                green: tuple.1 as u8,
+                blue: tuple.2 as u8,
+            })
+        }
+
     }
 }
 
@@ -48,6 +58,26 @@ impl TryFrom<(i16, i16, i16)> for Color {
 impl TryFrom<[i16; 3]> for Color {
     type Error = IntoColorError;
     fn try_from(arr: [i16; 3]) -> Result<Self, Self::Error> {
+        let l = arr.len();
+        if l > 3 || l < 3{
+            return Err(IntoColorError::BadLen);
+        }
+
+        let val1 = arr[0];
+        let val2 = arr[1];
+        let val3 = arr[2];
+
+
+
+        match arr{
+            [x, y, z] if x < 0 || y < 0 || z < 0 => Err(IntoColorError::IntConversion),
+            [x, y, z] if x > 255 || y > 255 || z > 255 => Err(IntoColorError::IntConversion),
+            [x, y, z]  =>  Ok(Self{
+                red: val1 as u8,
+                green: val2 as u8,
+                blue: val3 as u8,
+            })
+        }
     }
 }
 
@@ -55,6 +85,29 @@ impl TryFrom<[i16; 3]> for Color {
 impl TryFrom<&[i16]> for Color {
     type Error = IntoColorError;
     fn try_from(slice: &[i16]) -> Result<Self, Self::Error> {
+
+        let l = slice.len();
+        if l < 3 || l > 3 {
+            return Err(IntoColorError::BadLen);
+        }
+        let val1 = slice[0];
+        let val2 = slice[1];
+        let val3 = slice[2];
+
+        // if val1 > 255 || val2 > 255 || val3 > 255{
+        //     return Err(IntoColorError::IntConversion);
+        // }
+
+        match slice{
+            &[x, y, z] if x < 0 || y < 0 || z < 0 => Err(IntoColorError::IntConversion),
+            &[x, y, z] if x > 255 || y > 255 || z > 255 => Err(IntoColorError::IntConversion),
+            _  => Ok(Self{
+                red: val1 as u8,
+                green: val2 as u8,
+                blue: val3 as u8
+            })
+        }
+
     }
 }
 
